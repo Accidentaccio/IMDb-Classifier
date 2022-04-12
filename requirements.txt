@@ -1,0 +1,8 @@
+wheel
+joblib
+pandas
+nltk
+sklearn
+selenium
+xlsxwriter
+gensim
