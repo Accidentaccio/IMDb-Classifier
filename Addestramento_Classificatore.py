@@ -44,7 +44,7 @@ def main():
     global stops
     chdir(path[0])
 
-    df = read_csv('IMDB Dataset.csv')
+    df = read_csv('./IMDB Dataset.csv')
     df['Review'] = df['Review'].map(text_preprocessing)
 
     X_train, X_test, y_train, y_test = train_test_split(df['Review'], df['Sentiment'], test_size=0.33, random_state=10)

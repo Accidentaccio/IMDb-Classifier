@@ -63,16 +63,16 @@ df = DataFrame(movies_results)
 
 excel_file = ExcelWriter('./Results/Results_Sorted.xlsx', engine='xlsxwriter')
 
-df.sort_values(by = 'Rating', ascending=False)
-df.to_excel(excel_file, sheet_name='Marvel_Analysis')
+df = df.sort_values(by = 'Rating', ascending=False)
+df.to_excel(excel_file, sheet_name='Marvel_Analysis', index=False)
 print(df)
 
-df.sort_values(by = 'Positive rate', ascending=False)
-df.to_excel(excel_file, sheet_name='Marvel_Analysis', startcol=9)
+df = df.sort_values(by = 'Positive rate', ascending=False)
+df.to_excel(excel_file, sheet_name='Marvel_Analysis', startcol=7, index=False)
 print(df)
 
-df.sort_values(by = 'Positive rate nltk', ascending=False)
-df.to_excel(excel_file, sheet_name='Marvel_Analysis', startcol=18)
+df = df.sort_values(by = 'Positive rate nltk', ascending=False)
+df.to_excel(excel_file, sheet_name='Marvel_Analysis', startcol=14, index=False)
 print(df)
 
 excel_file.save()
