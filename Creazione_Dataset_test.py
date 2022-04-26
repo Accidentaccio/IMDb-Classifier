@@ -6,8 +6,10 @@ from pandas import DataFrame
 from os import chdir
 from sys import path
 
+## Move terminal in the script's directory ##
 chdir(path[0])
 
+## Create a dictionary (key = name of movie, value = link for reviews on IMDb) ##
 films = {
     'Iron Man': 'https://www.imdb.com/title/tt0371746/reviews?sort=submissionDate&dir=desc&ratingFilter=0',
     'L\'incredibile Hulk': 'https://www.imdb.com/title/tt0800080/reviews?sort=submissionDate&dir=desc&ratingFilter=0',
@@ -39,6 +41,7 @@ films = {
 
 }
 
+## WebDriver ##
 PATH = 'chromedriver.exe'
 s=Service(PATH)
 options = webdriver.ChromeOptions()
@@ -47,19 +50,23 @@ options.add_experimental_option('excludeSwitches', ['enable-logging'])
 pilot = webdriver.Chrome(service=s, options=options)
 
 
+## Loop for scraping every movie ##
 for key, value in films.items():
     
     pilot.get(value)
 
+    ## Click button "Load More Data" for get other reviews ##
     while True:
         try:
             pilot.find_element(By.XPATH, '//div[@class="load-more-data"]').click()
+
+        ## Exception were generated when the reviews are finished ##
         except NoSuchElementException:
             break
         except (ElementClickInterceptedException, ElementNotInteractableException):
             break
 
-
+    ## Expand reviews with spoiler ##
     warning_buttons = pilot.find_elements(By.XPATH, './/div[@class="expander-icon-wrapper spoiler-warning__control"]')
     for button in warning_buttons:
         try:
@@ -68,11 +75,13 @@ for key, value in films.items():
             pilot.execute_script("arguments[0].click();", button)
 
 
+    ## Get a list of reviews's box ##
     reviews = pilot.find_elements(By.XPATH, './/div[@class="lister-item-content"]')
 
     ratings = []
     texts = []
 
+    ## Capture in every box information about reviews, like rating, title and body ##
     for review in reviews:
 
         try:
@@ -86,6 +95,7 @@ for key, value in films.items():
         body = review.find_element(By.XPATH, './/div[contains(@class, "text show-more__control")]').text.replace('\n', '')
         texts.append(f'{title} {body}')
 
+    ## Finally create a dataframe with the scraping's results and put in .csv file with the name of the movie.
     df = DataFrame({
         'Rating' : ratings,
         'Reviews' : texts
